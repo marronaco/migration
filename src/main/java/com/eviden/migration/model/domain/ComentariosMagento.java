@@ -6,8 +6,7 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @ToString
 @Entity
 @Table(name = "comentariosmagento")
