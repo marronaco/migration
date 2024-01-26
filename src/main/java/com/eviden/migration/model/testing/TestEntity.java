@@ -12,7 +12,7 @@ import lombok.*;
 @Table(name = "testentity")
 public class TestEntity implements Serializable {
     
-    String fact;
-    int length;
+    String factou;
+    int textLength;
     
 }
