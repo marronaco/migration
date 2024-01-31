@@ -11,7 +11,7 @@ import lombok.*;
 @Entity
 public class TestEntity implements Serializable {
     
-    String factouu;
-    int textLength;
+    String fact;
+    int length;
     
 }
