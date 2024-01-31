@@ -18,9 +18,7 @@ public class ProductoMagento implements Serializable {
     private float price; // Precio de venta del producto.
     private float cost; // Precio de compra del producto (lo que nos costó).
 
-    private int status; // ??
     private int visibility; // Valor que dictamina quien puede ver el dato (1-4).
-    private String type_id; // ??
 
     private String weight;
 
