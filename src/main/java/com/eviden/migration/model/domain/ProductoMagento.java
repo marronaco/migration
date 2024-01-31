@@ -9,7 +9,6 @@ import lombok.*;
 @Data
 @ToString
 @Entity
-@Table(name = "productos")
 public class ProductoMagento implements Serializable {
     
     private String sku; // Palabra mediante a la que acceder al producto (suele ser igual al nombre).
