@@ -9,7 +9,6 @@ import lombok.*;
 @Data
 @ToString
 @Entity
-@Table(name = "clientemagento")
 public class ClienteMagento implements Serializable {
     
     @Id

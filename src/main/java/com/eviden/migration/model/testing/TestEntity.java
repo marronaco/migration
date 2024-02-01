@@ -9,10 +9,9 @@ import lombok.*;
 @Data
 @ToString
 @Entity
-@Table(name = "testentity")
 public class TestEntity implements Serializable {
     
-    String factouu;
-    int textLength;
+    String fact;
+    int length;
     
 }
