@@ -1,17 +1,17 @@
 package com.eviden.migration.model.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HttpResponseDrupalProductDetail {
+public class DrupalProducto {
 
     //atributos de la respuesta
     @JsonProperty("vid")
@@ -43,6 +43,8 @@ public class HttpResponseDrupalProductDetail {
 
     //Inner clases de los atributos de tipo objeto
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Body {
@@ -51,6 +53,8 @@ public class HttpResponseDrupalProductDetail {
     }
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class BodyUnd {
@@ -59,6 +63,8 @@ public class HttpResponseDrupalProductDetail {
     }
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class UcProductImage {
@@ -67,6 +73,8 @@ public class HttpResponseDrupalProductDetail {
     }
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ImageInfo {
