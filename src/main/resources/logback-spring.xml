@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-
-    <!-- Configuración para ocultar los mensajes de inicio -->
-    <logger name="c.eviden.migration.MigrationApplication" level="ERROR" />
-
-</configuration>
