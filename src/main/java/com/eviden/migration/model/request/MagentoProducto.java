@@ -2,15 +2,16 @@ package com.eviden.migration.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HttpRequestMagentoProduct {
+public class MagentoProducto {
 
     //atributos de la respuesta
     @JsonProperty("product")
@@ -44,6 +45,8 @@ public class HttpRequestMagentoProduct {
     }
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Custom_attributes {
