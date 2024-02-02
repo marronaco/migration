@@ -19,5 +19,6 @@ public class WebClientConfig {
         return WebClient.builder()
                 .baseUrl("http://marronaco.magento2.com/rest/V1")
                 .build();
+
     }
 }
