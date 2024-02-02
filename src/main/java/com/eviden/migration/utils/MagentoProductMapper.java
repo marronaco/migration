@@ -1,8 +1,8 @@
 package com.eviden.migration.utils;
 
-import com.eviden.migration.model.request.HttpRequestMagentoProduct;
-import com.eviden.migration.model.request.HttpRequestMagentoProduct.Custom_attributes;
-import com.eviden.migration.model.response.HttpResponseDrupalProductDetail;
+import com.eviden.migration.model.request.MagentoProducto;
+import com.eviden.migration.model.request.MagentoProducto.Custom_attributes;
+import com.eviden.migration.model.response.DrupalProducto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
@@ -10,7 +10,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.eviden.migration.model.response.HttpResponseDrupalProductDetail.BodyUnd;
+import static com.eviden.migration.model.request.MagentoProducto.*;
+import static com.eviden.migration.model.response.DrupalProducto.BodyUnd;
 
 @Slf4j
 public class MagentoProductMapper {
@@ -20,10 +21,10 @@ public class MagentoProductMapper {
      * @param productDetail
      * @return
      */
-    public static HttpRequestMagentoProduct drupalProductDetailToMagentoProduct(HttpResponseDrupalProductDetail productDetail){
+    public static MagentoProducto mapDrupalProductoDetalleToMagento(DrupalProducto productDetail){
         log.info("Iniciando mapeo del producto: {}", productDetail.getTitle());
-        return HttpRequestMagentoProduct.builder()
-                .product(productoMapperToMagento(productDetail))
+        return builder()
+                .product(mapProductoToMagento(productDetail))
                 .build();
     }
 
@@ -32,7 +33,7 @@ public class MagentoProductMapper {
      * @param productDetail
      * @return producto
      */
-    private static HttpRequestMagentoProduct.Product productoMapperToMagento(HttpResponseDrupalProductDetail productDetail) {
+    private static Product mapProductoToMagento(DrupalProducto productDetail) {
         log.info("Mapeo del producto detalle drupal a magento...");
         //descripción del producto
         Optional<BodyUnd> value = productDetail.getBody().getUnd()
@@ -40,7 +41,7 @@ public class MagentoProductMapper {
                 .findFirst();
 
         //mapeo del producto
-        return HttpRequestMagentoProduct.Product.builder()
+        return Product.builder()
                 .sku(productDetail.getTitle())
                 .name(productDetail.getTitle())
                 .price(Double.parseDouble(productDetail.getPrice()))
@@ -48,11 +49,11 @@ public class MagentoProductMapper {
                 .weight(Double.parseDouble(productDetail.getWeight()))
                 .customAttributes(List.of(
                         //mapeo de la descripcion del producto
-                        descripcionMapperToMagento("description", value),
+                        mapDescripcionToMagento("description", value),
                         //mapeo del costo del producto
-                        costoMapperToMagento("cost", productDetail.getCost()),
+                        mapCostoToMagento("cost", productDetail.getCost()),
                         //maepo de la uri del producto
-                        uriMapperToMagento("url_key", productDetail.getPath())
+                        mapUriToMagento("url_key", productDetail.getPath())
                 ))
                 .build();
     }
@@ -63,7 +64,7 @@ public class MagentoProductMapper {
      * @param path
      * @return URI
      */
-    private static Custom_attributes uriMapperToMagento(String attributeCode, String path) {
+    private static Custom_attributes mapUriToMagento(String attributeCode, String path) {
         log.info("Mapeo URI del producto...");
         return   Custom_attributes.builder()
                 .attributeCode(attributeCode)
@@ -77,7 +78,7 @@ public class MagentoProductMapper {
      * @param cost
      * @return costo
      */
-    private static Custom_attributes costoMapperToMagento(String attributeCode, String cost) {
+    private static Custom_attributes mapCostoToMagento(String attributeCode, String cost) {
         log.info("Mapeo costo del producto...");
         return   Custom_attributes.builder()
                 .attributeCode(attributeCode)
@@ -91,7 +92,7 @@ public class MagentoProductMapper {
      * @param value
      * @return descripción
      */
-    private static Custom_attributes descripcionMapperToMagento(String attributeCode, Optional<BodyUnd> value) {
+    private static Custom_attributes mapDescripcionToMagento(String attributeCode, Optional<BodyUnd> value) {
         log.info("Mapeo descripción del producto...");
         return Custom_attributes.builder()
                 .attributeCode(attributeCode)
