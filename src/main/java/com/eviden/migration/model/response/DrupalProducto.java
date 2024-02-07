@@ -78,25 +78,25 @@ public class DrupalProducto {
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ImageInfo {
-        @JsonProperty("fid")
-        private String fid;
-        @JsonProperty("uid")
-        private String uid;
         @JsonProperty("filename")
         private String filename;
         @JsonProperty("uri")
         private String  uri;
         @JsonProperty("filemime")
         private String filemime;
-        @JsonProperty("filesize")
-        private String filesize;
-        @JsonProperty("status")
-        private String status;
-        @JsonProperty("timestamp")
-        private String timestamp;
-        @JsonProperty("width")
-        private String width;
-        @JsonProperty("height")
-        private String  height;
+//        @JsonProperty("fid")
+//        private String fid;
+//        @JsonProperty("uid")
+//        private String uid;
+//        @JsonProperty("filesize")
+//        private String filesize;
+//        @JsonProperty("status")
+//        private String status;
+//        @JsonProperty("timestamp")
+//        private String timestamp;
+//        @JsonProperty("width")
+//        private String width;
+//        @JsonProperty("height")
+//        private String  height;
     }
 }
