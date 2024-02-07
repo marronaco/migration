@@ -11,7 +11,7 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MagentoAuthRequest {
     @JsonProperty("username")
-    private String userName;
+    private String username;
     @JsonProperty("password")
     private String password;
 }
