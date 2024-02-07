@@ -35,21 +35,17 @@ public class MagentoProductMapper {
      */
     private static Product mapProductoToMagento(DrupalProducto productDetail) {
         log.info("Mapeo del producto detalle drupal a magento...");
-        //descripción del producto
-        Optional<BodyUnd> value = productDetail.getBody().getUnd()
-                .stream()
-                .findFirst();
-
         //mapeo del producto
         return Product.builder()
                 .sku(productDetail.getTitle())
                 .name(productDetail.getTitle())
                 .price(Double.parseDouble(productDetail.getPrice()))
                 .type_id("simple")
+                .attribute_set_id(4) //este atributo posiblemente es en el que se establece las categorias
                 .weight(Double.parseDouble(productDetail.getWeight()))
                 .customAttributes(List.of(
                         //mapeo de la descripcion del producto
-                        mapDescripcionToMagento("description", value),
+                        mapDescripcionToMagento("description", productDetail.getBody().getUnd()),
                         //mapeo del costo del producto
                         mapCostoToMagento("cost", productDetail.getCost()),
                         //maepo de la uri del producto
@@ -92,12 +88,17 @@ public class MagentoProductMapper {
      * @param value
      * @return descripción
      */
-    private static Custom_attributes mapDescripcionToMagento(String attributeCode, Optional<BodyUnd> value) {
+    private static Custom_attributes mapDescripcionToMagento(String attributeCode, List<BodyUnd> value) {
         log.info("Mapeo descripción del producto...");
+        //descripción del producto
+        String valueFound = value.stream()
+                .findFirst()
+                .map(BodyUnd::getValue)
+                .orElse("");
+
         return Custom_attributes.builder()
                 .attributeCode(attributeCode)
-                .value(String.valueOf(value
-                        .orElse(BodyUnd.builder().value("").build())))
+                .value(valueFound)
                 .build();
     }
 
