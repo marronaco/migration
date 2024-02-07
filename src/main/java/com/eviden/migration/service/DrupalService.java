@@ -32,7 +32,6 @@ public class DrupalService {
         //obtner el CSRF de drupal
         return drupalWebClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/user/token.json").build())
-                .header("Content-Type", "application/json")
                 .retrieve()
                 .bodyToMono(DrupalAuthCsrf.class)
                 .onErrorResume(WebClientResponseException.class, ex -> {
@@ -40,8 +39,7 @@ public class DrupalService {
                     HttpStatus status = ex.getStatusCode();
                     String response = ex.getResponseBodyAsString();
                     return Mono.error(
-                            new AuthenticationFailedException("Error: '%s' | Mensaje: '%s?"
-                                    .formatted(status,response)));
+                            new AuthenticationFailedException(response,status));
                 })
                 .doOnError(error -> {
                     log.error("Error: '%s'".formatted(error));
@@ -57,7 +55,6 @@ public class DrupalService {
         log.info("Drupal: obteniendo producto del NID '{}'", nid);
         return drupalWebClient.get()
                 .uri("/node/{nid}",nid)
-                .header("Content-Type","application/json")
                 .retrieve()
                 .bodyToMono(DrupalProducto.class)
                 .onErrorResume(WebClientResponseException.class, ex -> {
@@ -65,7 +62,7 @@ public class DrupalService {
                     HttpStatus status = ex.getStatusCode();
                     String response = ex.getResponseBodyAsString();
                     return Mono.error(
-                            new ResourceNotFoundException("Error: '%s' | Mensaje: '%s?"
+                            new ResourceNotFoundException("Error: '%s' | Mensaje: '%s'"
                                     .formatted(status,response)));
                 })
                 .doOnError(error -> {
