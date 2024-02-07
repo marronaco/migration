@@ -11,6 +11,7 @@ public class WebClientConfig {
     public WebClient drupalWebClient(){
         return WebClient.builder()
                 .baseUrl("http://localhost/test_drupal/rest")
+                .defaultHeader("Content-Type","application/json")
                 .build();
     }
 
@@ -18,6 +19,7 @@ public class WebClientConfig {
     public WebClient magentoWebClient(){
         return WebClient.builder()
                 .baseUrl("http://marronaco.magento2.com/rest/V1")
+                .defaultHeader("Content-Type","application/json")
                 .build();
 
     }
