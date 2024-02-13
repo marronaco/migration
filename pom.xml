@@ -81,6 +81,14 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>
+
+		<!--Csv-->
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.6</version> <!-- Utiliza la versión más reciente
+			disponible -->
+		</dependency>
 	</dependencies>
 
 	<build>

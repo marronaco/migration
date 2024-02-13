@@ -1,47 +1,71 @@
 package com.eviden.migration.service;
 
-import com.eviden.migration.model.request.MagentoAuthToken;
-import com.eviden.migration.model.response.DrupalProducto;
+import com.eviden.migration.model.DrupalProductoCsv;
+import com.eviden.migration.model.response.MagentoAuthToken;
+import com.eviden.migration.model.response.MagentoMediaResponse;
 import com.eviden.migration.model.response.MagentoProductResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @Service
 public class MigrationService {
-    private final DrupalService drupalService;
+    private final DrupalServiceCsv drupalServiceCsv;
     private  final MagentoService magentoService;
 
-    public MigrationService(DrupalService drupalService, MagentoService magentoService) {
-        this.drupalService = drupalService;
+    public MigrationService(DrupalServiceCsv drupalServiceCsv, MagentoService magentoService) {
+        this.drupalServiceCsv = drupalServiceCsv;
         this.magentoService = magentoService;
     }
 
     //migrar producto de drupal a magento
     public void migracionProducto(){
+        //drupal: obtener producto
+        List<DrupalProductoCsv> drupalProductos = obtenerProdutosDrupal();
         //magento: autenticar usuario
-        Mono<MagentoAuthToken> authMagento = magentoService.autenticarUsuario();
-        //subscribir a la llamada
-        authMagento.subscribe();
-
-        //drupal:obtener producto en drupal
-        Mono<DrupalProducto> drupalProducto = drupalService.obtenerDrupalCSRF()
-                .doOnSuccess(authCsrf -> {
-                    log.info("CSRF: {}", authCsrf.getToken());
-                })
-                .then(drupalService.obtenerProductoByNid(2)
-                        .doOnSuccess(producto -> {
-                            log.info("Drupal Producto {}", producto.toString());
+        autenticarUsuarioMagento().block();
+        //drupal: iterar sobre los productos
+        Flux.fromIterable(drupalProductos)
+                        .flatMapSequential(drupalProducto -> {
+                            return insertarProducto(drupalProducto)
+                                    .thenMany(insertarImagenesEnProducto(
+                                            drupalProducto.getImagesPath(),
+                                            drupalProducto.getTitle()));
                         })
-                );
-        //magento: insertar producto
-        Mono<MagentoProductResponse> magentoResponse = magentoService.insertarProducto(drupalProducto.block())
+                                .subscribe();
+    }
+
+    private List<DrupalProductoCsv> obtenerProdutosDrupal() {
+        return drupalServiceCsv.importarProductosDrupalDesdeCsv();
+    }
+
+    private Mono<MagentoAuthToken> autenticarUsuarioMagento(){
+        return magentoService.autenticarUsuario();
+    }
+
+    private Mono<MagentoProductResponse> insertarProducto(DrupalProductoCsv drupalProducto){
+        //insertar producto en magento
+        return magentoService.insertarProducto(drupalProducto)
                 .doOnSuccess(magentoProducto -> {
-                    log.info("Magento Producto {}", magentoProducto.toString());
+                    log.info("Magento: producto Response {}", magentoProducto.toString());
                 });
-        //subscribir a la llamada
-        magentoResponse.subscribe();
-        
+
+
+    }
+
+    private Flux<MagentoMediaResponse> insertarImagenesEnProducto(List<String> imagesPath, String productoTitle){
+        //listado de rutas de images del producto
+        return Flux.fromIterable(imagesPath)
+                .flatMapSequential(imagePath -> insertarImagenEnProducto(imagePath, productoTitle));
+    }
+
+    private Mono<MagentoMediaResponse> insertarImagenEnProducto(String imagePath, String productoTitle){
+        //insertar imagen en el producto creado
+        return  magentoService
+                .insertarImagenEnProducto(imagePath, productoTitle);
     }
 }

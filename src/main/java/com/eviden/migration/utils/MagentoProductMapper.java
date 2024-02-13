@@ -1,17 +1,17 @@
 package com.eviden.migration.utils;
 
+import com.eviden.migration.model.DrupalProductoCsv;
 import com.eviden.migration.model.request.MagentoProducto;
 import com.eviden.migration.model.request.MagentoProducto.Custom_attributes;
-import com.eviden.migration.model.response.DrupalProducto;
+import com.eviden.migration.model.response.DrupalProductoJson;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 
 import static com.eviden.migration.model.request.MagentoProducto.*;
-import static com.eviden.migration.model.response.DrupalProducto.BodyUnd;
+import static com.eviden.migration.model.response.DrupalProductoJson.BodyUnd;
 
 @Slf4j
 public class MagentoProductMapper {
@@ -21,8 +21,8 @@ public class MagentoProductMapper {
      * @param productDetail
      * @return
      */
-    public static MagentoProducto mapDrupalProductoDetalleToMagento(DrupalProducto productDetail){
-        log.info("Iniciando mapeo del producto: {}", productDetail.getTitle());
+    public static MagentoProducto mapDrupalProductoDetalleToMagento(DrupalProductoCsv productDetail){
+        log.info("Mapper: iniciando mapeo del producto: {}", productDetail.getTitle());
         return builder()
                 .product(mapProductoToMagento(productDetail))
                 .build();
@@ -33,24 +33,34 @@ public class MagentoProductMapper {
      * @param productDetail
      * @return producto
      */
-    private static Product mapProductoToMagento(DrupalProducto productDetail) {
-        log.info("Mapeo del producto detalle drupal a magento...");
+    private static Product mapProductoToMagento(DrupalProductoCsv productDetail) {
+        log.info("Mapper: creando el objeto producto magento...");
         //mapeo del producto
         return Product.builder()
+                //TODO: cambiar sku por el sku del productDetail
                 .sku(productDetail.getTitle())
                 .name(productDetail.getTitle())
-                .price(Double.parseDouble(productDetail.getPrice()))
+                .price(Double.parseDouble(productDetail.getPrecioVenta()))
                 .type_id("simple")
                 .attribute_set_id(4) //este atributo posiblemente es en el que se establece las categorias
-                .weight(Double.parseDouble(productDetail.getWeight()))
                 .customAttributes(List.of(
                         //mapeo de la descripcion del producto
-                        mapDescripcionToMagento("description", productDetail.getBody().getUnd()),
+                       // mapDescripcionToMagento("description", productDetail.getBody().getUnd()),
                         //mapeo del costo del producto
                         mapCostoToMagento("cost", productDetail.getCost()),
                         //maepo de la uri del producto
-                        mapUriToMagento("url_key", productDetail.getPath())
+                        mapUriToMagento("url_key", productDetail.getPath()),
+                        //maepo del precio mostrado del producto
+                        mapSpecialPriceToMagento("special_price", productDetail.getPrecioMostrado())
                 ))
+                .build();
+    }
+
+    private static Custom_attributes mapSpecialPriceToMagento(String attributeCode, String precioMostrado) {
+        log.info("Mapper: special price del producto");
+        return   Custom_attributes.builder()
+                .attributeCode(attributeCode)
+                .value(precioMostrado)
                 .build();
     }
 
@@ -61,10 +71,10 @@ public class MagentoProductMapper {
      * @return URI
      */
     private static Custom_attributes mapUriToMagento(String attributeCode, String path) {
-        log.info("Mapeo URI del producto...");
+        log.info("Mapper: URI del producto");
         return   Custom_attributes.builder()
                 .attributeCode(attributeCode)
-                .value(extraerURI(path))
+                .value(path)
                 .build();
     }
 
@@ -75,7 +85,7 @@ public class MagentoProductMapper {
      * @return costo
      */
     private static Custom_attributes mapCostoToMagento(String attributeCode, String cost) {
-        log.info("Mapeo costo del producto...");
+        log.info("Mapper: costo del producto");
         return   Custom_attributes.builder()
                 .attributeCode(attributeCode)
                 .value(cost)
@@ -89,7 +99,7 @@ public class MagentoProductMapper {
      * @return descripción
      */
     private static Custom_attributes mapDescripcionToMagento(String attributeCode, List<BodyUnd> value) {
-        log.info("Mapeo descripción del producto...");
+        log.info("Mapper: descripción del producto");
         //descripción del producto
         String valueFound = value.stream()
                 .findFirst()
@@ -110,7 +120,7 @@ public class MagentoProductMapper {
      * @return uri
      */
     private static String extraerURI(String url){
-        log.info("Obteniendo la uri del producto..");
+        log.info("Mapper: obteniendo la uri del producto");
         try {
             URI uri = new URI(url);
             String path = uri.getPath();

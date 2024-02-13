@@ -4,26 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-
-import javax.servlet.http.HttpServletRequest;
-import java.net.ConnectException;
 
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(ConnectException.class)
-    public void handleConnectException(ConnectException ex){
-        //almacenar respuesta de la petición
-        String response = ex.getMessage();
-        //mostrar respuesta
-//        log.error("Error: {}", response);
-    }
 
     /**
      * Metodo que gestiona las exepciones
@@ -40,8 +28,8 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Metodo muestra el tipo de error lanzado
-     * por la clase Authen
+     * Metodo que gestiona la autenticacion
+     * en el drupal
      * @param ex
      */
     @ExceptionHandler(AuthenticationFailedException.class)
@@ -52,4 +40,15 @@ public class GlobalExceptionHandler {
         //mostrar respuesta
         log.error("Error autenticacion: {} {}", status, response);
     }
+
+
+    //Metodo que gestiona convertir la imagen a bytes
+    @ExceptionHandler(ImageFailedException.class)
+    public void handleImageFailedException(ImageFailedException ex){
+        //almacenar respuesta de la lectura del fichero
+        String response = ex.getMessage();
+        //mostrar respuesta
+        log.error("Error lectura imagen: {}", response);
+    }
+
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DrupalProducto {
+public class DrupalProductoJson {
 
     //atributos de la respuesta
     @JsonProperty("vid")
@@ -84,19 +84,5 @@ public class DrupalProducto {
         private String  uri;
         @JsonProperty("filemime")
         private String filemime;
-//        @JsonProperty("fid")
-//        private String fid;
-//        @JsonProperty("uid")
-//        private String uid;
-//        @JsonProperty("filesize")
-//        private String filesize;
-//        @JsonProperty("status")
-//        private String status;
-//        @JsonProperty("timestamp")
-//        private String timestamp;
-//        @JsonProperty("width")
-//        private String width;
-//        @JsonProperty("height")
-//        private String  height;
     }
 }

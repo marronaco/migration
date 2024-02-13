@@ -3,23 +3,20 @@ package com.eviden.migration.service;
 import com.eviden.migration.exceptions.AuthenticationFailedException;
 import com.eviden.migration.exceptions.ResourceNotFoundException;
 import com.eviden.migration.model.response.DrupalAuthCsrf;
-import com.eviden.migration.model.response.DrupalProducto;
+import com.eviden.migration.model.response.DrupalProductoJson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
-
 @Slf4j
 @Service
-public class DrupalService {
+public class DrupalServiceApi {
     private final WebClient drupalWebClient;
 
-    public DrupalService(WebClient drupalWebClient) {
+    public DrupalServiceApi(WebClient drupalWebClient) {
         this.drupalWebClient = drupalWebClient;
     }
 
@@ -51,12 +48,12 @@ public class DrupalService {
      * @param nid
      * @return producto
      */
-    public Mono<DrupalProducto> obtenerProductoByNid(Integer nid){
+    public Mono<DrupalProductoJson> obtenerProductoByNid(Integer nid){
         log.info("Drupal: obteniendo producto del NID '{}'", nid);
         return drupalWebClient.get()
                 .uri("/node/{nid}",nid)
                 .retrieve()
-                .bodyToMono(DrupalProducto.class)
+                .bodyToMono(DrupalProductoJson.class)
                 .onErrorResume(WebClientResponseException.class, ex -> {
                     //manejo detallado de la excepcion
                     HttpStatus status = ex.getStatusCode();

@@ -2,11 +2,15 @@ package com.eviden.migration.service;
 
 import com.eviden.migration.exceptions.AuthenticationFailedException;
 import com.eviden.migration.exceptions.ResourceNotFoundException;
+import com.eviden.migration.model.DrupalProductoCsv;
 import com.eviden.migration.model.request.MagentoAuthRequest;
-import com.eviden.migration.model.request.MagentoAuthToken;
+import com.eviden.migration.model.response.MagentoAuthToken;
+import com.eviden.migration.model.request.MagentoMedia;
 import com.eviden.migration.model.request.MagentoProducto;
-import com.eviden.migration.model.response.DrupalProducto;
+import com.eviden.migration.model.response.DrupalProductoJson;
+import com.eviden.migration.model.response.MagentoMediaResponse;
 import com.eviden.migration.model.response.MagentoProductResponse;
+import com.eviden.migration.utils.MagentoMediaMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import static com.eviden.migration.utils.MagentoMediaMapper.*;
 import static com.eviden.migration.utils.MagentoProductMapper.mapDrupalProductoDetalleToMagento;
 @Slf4j
 @Service
@@ -32,8 +37,8 @@ public class MagentoService {
         log.info("Magento: autenticacion del usuario, obteniendo token...");
         //definir credenciales del usuario y contraseña
         MagentoAuthRequest authRequest = MagentoAuthRequest.builder()
-                .username("admin")
-                .password("admin123")
+                .username("DrupalAdmin")
+                .password("B1llMurr@y")
                 .build();
 
         //almacenar el token devuelto de la solicitud
@@ -51,9 +56,10 @@ public class MagentoService {
 
     /**
      * Metodo para insertar producto en magento
+     *
      * @param drupalProducto
      */
-    public Mono<MagentoProductResponse> insertarProducto(DrupalProducto drupalProducto) {
+    public Mono<MagentoProductResponse> insertarProducto(DrupalProductoCsv drupalProducto) {
         log.info("Magento: AuthToken {}", authToken);
         //comprobar si el token es nulo
         if(authToken == null){
@@ -82,9 +88,27 @@ public class MagentoService {
                 });
     }
 
-    //crear un metodo para insertar la imagen
-    //crear una clase de MagentoImagenMapper
-    //mapear la ruta de la imagen obtenida de drupal a magento
+    public Mono<MagentoMediaResponse> insertarImagenEnProducto(String imagePath, String productoName){
+        log.info("Magento: insertando imagen en el producto {}", productoName );
+        //mapear la ruta de imagen a MagentoMedia
+        MagentoMedia magentoMedia = mapDrupalMedia(imagePath);
+        return magentoWebClient.post()
+                .uri("/products/{productoName}/media",productoName)
+                .header("Authorization", "Bearer %s".formatted(authToken))
+                .body(Mono.just(magentoMedia), MagentoMedia.class)
+                .retrieve()
+                .bodyToMono(MagentoMediaResponse.class)
+                .onErrorResume(WebClientResponseException.class, ex -> {
+                    //manejo detallado de la excepcion
+                    HttpStatus status = ex.getStatusCode();
+                    String response = ex.getResponseBodyAsString();
+                    return Mono.error(
+                            new ResourceNotFoundException("Error: '%s' | Mensaje: '%s'"
+                                    .formatted(status,response)));
+                })
+                .doOnError(error -> {
+                    log.error("Error: '%s'".formatted(error));
+                });
 
-
+    }
 }

@@ -18,7 +18,8 @@ public class WebClientConfig {
     @Bean
     public WebClient magentoWebClient(){
         return WebClient.builder()
-                .baseUrl("http://marronaco.magento2.com/rest/V1")
+//                .baseUrl("http://marronaco.magento2.com/rest/V1")
+                .baseUrl("http://tablerummagento.com/rest/V1")
                 .defaultHeader("Content-Type","application/json")
                 .build();
 
