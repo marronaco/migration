@@ -40,6 +40,12 @@ public class MagentoProducto {
         @JsonProperty("weight")
         private double weight;
 
+        @JsonProperty("status")
+        private double status; // 1 = Si | 2 = NO
+
+        @JsonProperty("extension_attributes")
+        private ExtensionAttribute extensionAttributes;
+
         @JsonProperty("custom_attributes")
         private List<Custom_attributes> customAttributes;
     }
@@ -54,5 +60,41 @@ public class MagentoProducto {
         private String attributeCode;
         @JsonProperty("value")
         private String value;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class ExtensionAttribute {
+        @JsonProperty("stock_item")
+        private StockItem stock_item;
+        @JsonProperty("category_links")
+        private List<CategoryLink> categoryLinks;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class StockItem {
+        @JsonProperty("qty")
+        private int qty;
+        @JsonProperty("is_in_stock")
+        private boolean is_in_stock;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class CategoryLink {
+        @JsonProperty("position")
+        private int position;
+        @JsonProperty("category_id")
+        private String categoryId;
     }
 }

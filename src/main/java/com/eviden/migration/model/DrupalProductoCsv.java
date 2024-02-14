@@ -12,19 +12,26 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class DrupalProductoCsv {
-
     //atributos del CSV
+    private String sku;
     private String title;
-
-    private List<String> imagesPath;
-
-    private String precioVenta;
-
-    private String precioMostrado;
-
-    private String cost;
-
     private String path;
+    private String descripcion;
+    private String estanteria;
+    private List<String> imagesPath;
+    private String cost;
+    private String precioVenta;
+    private String precioMostrado;
+    private String edad;
+    private String editorial;
+    private String duracion;
+    private String dificultad;
+    private String oferta;
+    private String nivel;
+    private String publicado;
+    private String jugadores;
+    //adaptar segun lo que me pase david
+    private String categoria;
+    private String umbral;
 
-    private String nid;
 }

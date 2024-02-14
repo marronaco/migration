@@ -34,7 +34,7 @@ public class MigrationService {
                             return insertarProducto(drupalProducto)
                                     .thenMany(insertarImagenesEnProducto(
                                             drupalProducto.getImagesPath(),
-                                            drupalProducto.getTitle()));
+                                            drupalProducto.getSku()));
                         })
                                 .subscribe();
     }
@@ -57,15 +57,16 @@ public class MigrationService {
 
     }
 
-    private Flux<MagentoMediaResponse> insertarImagenesEnProducto(List<String> imagesPath, String productoTitle){
+    private Flux<MagentoMediaResponse> insertarImagenesEnProducto(List<String> imagesPath, String productoSku){
+        log.info("Cantidad de imagenes asociadas al producto: {}", imagesPath.size());
         //listado de rutas de images del producto
         return Flux.fromIterable(imagesPath)
-                .flatMapSequential(imagePath -> insertarImagenEnProducto(imagePath, productoTitle));
+                .flatMapSequential(imagePath -> insertarImagenEnProducto(imagePath, productoSku));
     }
 
-    private Mono<MagentoMediaResponse> insertarImagenEnProducto(String imagePath, String productoTitle){
+    private Mono<MagentoMediaResponse> insertarImagenEnProducto(String imagePath, String productoSku){
         //insertar imagen en el producto creado
         return  magentoService
-                .insertarImagenEnProducto(imagePath, productoTitle);
+                .insertarImagenEnProducto(imagePath, productoSku);
     }
 }

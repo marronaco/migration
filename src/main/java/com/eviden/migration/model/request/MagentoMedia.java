@@ -29,6 +29,9 @@ public class MagentoMedia {
         @JsonProperty("label")
         private String label;
 
+        @JsonProperty("disabled")
+        private boolean disabled;
+
         @JsonProperty("types")
         private List<String> types;
 

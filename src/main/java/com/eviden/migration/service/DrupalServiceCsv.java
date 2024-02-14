@@ -40,17 +40,26 @@ public class DrupalServiceCsv {
     private  DrupalProductoCsv mapToProductoDrupalCsv(String[] linea) {
         log.info("Drupal: obtenido producto {}", linea[0]);
         //separar la ruta de images a una array
-        String[] imagenesArray = linea[1].split(", ");
-
+        String[] imagenesArray = linea[5].split(",");
+        //devuelve la creacion del nuevo objeto
         return DrupalProductoCsv.builder()
-                .title(linea[0])
-                .imagesPath(Arrays.asList(imagenesArray))
-                .precioVenta(linea[2])
-                .precioMostrado(linea[3])
-                .cost(linea[4])
-                .path(linea[5])
-                .nid(linea[6])
-                .build();
-
+                    .sku(linea[0])
+                    .title(linea[1])
+                    .path(linea[2])
+                    .descripcion(linea[3])
+                    .estanteria(linea[4])
+                    .imagesPath(Arrays.asList(imagenesArray))
+                    .cost(linea[6])
+                    .precioVenta(linea[7])
+                    .precioMostrado(linea[8])
+                    .edad(linea[9])
+                    .editorial(linea[10])
+                    .duracion(linea[11])
+                    .dificultad(linea[12])
+                    .oferta(linea[13])
+                    .nivel(linea[14])
+                    .publicado(linea[15])
+                    .jugadores(linea[16])
+                    .build();
     }
 }

@@ -33,7 +33,8 @@ public class MagentoMediaMapper {
         return MagentoMedia.builder()
                 .entry(MagentoMedia.Entry.builder()
                         .mediaType("image")
-                        .label("new_picture")
+                        .label("Holanda image")
+                        .disabled(true)
                         .types(List.of(
                                 "image",
                                 "small_image",

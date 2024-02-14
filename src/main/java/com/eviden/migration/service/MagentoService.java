@@ -7,10 +7,8 @@ import com.eviden.migration.model.request.MagentoAuthRequest;
 import com.eviden.migration.model.response.MagentoAuthToken;
 import com.eviden.migration.model.request.MagentoMedia;
 import com.eviden.migration.model.request.MagentoProducto;
-import com.eviden.migration.model.response.DrupalProductoJson;
 import com.eviden.migration.model.response.MagentoMediaResponse;
 import com.eviden.migration.model.response.MagentoProductResponse;
-import com.eviden.migration.utils.MagentoMediaMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -88,12 +86,12 @@ public class MagentoService {
                 });
     }
 
-    public Mono<MagentoMediaResponse> insertarImagenEnProducto(String imagePath, String productoName){
-        log.info("Magento: insertando imagen en el producto {}", productoName );
+    public Mono<MagentoMediaResponse> insertarImagenEnProducto(String imagePath, String productoSku){
+        log.info("Magento: insertando imagen en el producto {}", productoSku);
         //mapear la ruta de imagen a MagentoMedia
         MagentoMedia magentoMedia = mapDrupalMedia(imagePath);
         return magentoWebClient.post()
-                .uri("/products/{productoName}/media",productoName)
+                .uri("/products/{productoName}/media", productoSku)
                 .header("Authorization", "Bearer %s".formatted(authToken))
                 .body(Mono.just(magentoMedia), MagentoMedia.class)
                 .retrieve()
