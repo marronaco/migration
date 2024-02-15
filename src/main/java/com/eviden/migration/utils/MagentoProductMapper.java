@@ -36,7 +36,7 @@ public class MagentoProductMapper {
         return Product.builder()
                 .sku(productDetail.getSku())
                 .name(productDetail.getTitle())
-                .price(Double.parseDouble(productDetail.getPrecioVenta()))
+                .price(Double.parseDouble(productDetail.getPrecioVentaSinIva()))
                 .status(mapPublicadoToMagento(productDetail.getPublicado()))
                 .type_id("simple")
                 .attribute_set_id(4)
@@ -49,7 +49,7 @@ public class MagentoProductMapper {
                         //mapeo de la uri
                         mapUriToMagento("url_key", productDetail.getPath()),
                         //mapeo del precio mostrado
-                        mapSpecialPriceToMagento("special_price", productDetail.getPrecioMostrado()),
+                        mapOldPriceToMagento("pvp", productDetail.getOldPrice()),
                         //mapeo de la estanteria
                         mapEstanteriaToMagento("estanteria", productDetail.getEstanteria()),
                         //mapeo de la edad
@@ -87,28 +87,28 @@ public class MagentoProductMapper {
 
     private static List<CategoryLink> mapCategoriasToMagento(String categoria) {
         log.info("Mapper: Categorias");
-        //TODO: incluir el id de categorias de Magento y evaluar todas las respuestas de categoria de drupal
+        //TODO: incluir el id de categorias de Magento y evaluar todas las respuestas de categoria de drupal switch
         return List.of(
                 CategoryLink.builder()
                         .position(0)
-                        .categoryId(categoria.toLowerCase().equals("juegosDeMesa") ? "3" : "0") //juegos de mesa se alamcena en el id 3
+                        .categoryId(categoria.equals("Juegos de Mesa") ? "3" : "0") //juegos de mesa se alamcena en el id 3
                         .build()
         );
     }
 
     private static Custom_attributes mapOfertaToMagento(String attributeCode, String oferta) {
         log.info("Mapper: Oferta");
-        //En magento oferta: 1 = SI | 2 = NO
+        //En magento oferta: 1 = SI | 0 = NO
         return   Custom_attributes.builder()
                 .attributeCode(attributeCode)
-                .value(oferta.toLowerCase().equals("si") ? "1" : "0")
+                .value(oferta.equals("Si") ? "1" : "0")
                 .build();
     }
 
     private static double mapPublicadoToMagento(String publicado) {
         log.info("Mapper: publicado");
         //En magento producto status (visibilidad): 1 = visible | 2 = NO visible
-        return publicado.toLowerCase().equals("si") ? 1 : 2;
+        return publicado.equals("Sí") ? 1 : 2;
     }
 
     /**
@@ -217,7 +217,7 @@ public class MagentoProductMapper {
      * @param precioMostrado
      * @return
      */
-    private static Custom_attributes mapSpecialPriceToMagento(String attributeCode, String precioMostrado) {
+    private static Custom_attributes mapOldPriceToMagento(String attributeCode, String precioMostrado) {
         log.info("Mapper: special price");
         return   Custom_attributes.builder()
                 .attributeCode(attributeCode)

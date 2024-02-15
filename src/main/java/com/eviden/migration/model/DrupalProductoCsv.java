@@ -20,8 +20,8 @@ public class DrupalProductoCsv {
     private String estanteria;
     private List<String> imagesPath;
     private String cost;
-    private String precioVenta;
-    private String precioMostrado;
+    private String precioVentaSinIva;
+    private String oldPrice;
     private String edad;
     private String editorial;
     private String duracion;
@@ -30,7 +30,6 @@ public class DrupalProductoCsv {
     private String nivel;
     private String publicado;
     private String jugadores;
-    //adaptar segun lo que me pase david
     private String categoria;
     private String umbral;
 

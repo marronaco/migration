@@ -21,7 +21,7 @@ public class DrupalServiceCsv {
         try {
             log.info("Drupal: Lectura del CSV Productos...");
             //Lectura del fichero csv
-            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/drupal_productos.csv"));
+            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/dungeon.csv"));
             String[] linea;
             //salto la primera linea
             csvReader.readNext();
@@ -40,7 +40,7 @@ public class DrupalServiceCsv {
     private  DrupalProductoCsv mapToProductoDrupalCsv(String[] linea) {
         log.info("Drupal: obtenido producto {}", linea[0]);
         //separar la ruta de images a una array
-        String[] imagenesArray = linea[5].split(",");
+        String[] imagenesArray = linea[5].split("\\s*,\\s*");
         //devuelve la creacion del nuevo objeto
         return DrupalProductoCsv.builder()
                     .sku(linea[0])
@@ -50,8 +50,8 @@ public class DrupalServiceCsv {
                     .estanteria(linea[4])
                     .imagesPath(Arrays.asList(imagenesArray))
                     .cost(linea[6])
-                    .precioVenta(linea[7])
-                    .precioMostrado(linea[8])
+                    .precioVentaSinIva(linea[7])
+                    .oldPrice(linea[8])
                     .edad(linea[9])
                     .editorial(linea[10])
                     .duracion(linea[11])
@@ -60,6 +60,8 @@ public class DrupalServiceCsv {
                     .nivel(linea[14])
                     .publicado(linea[15])
                     .jugadores(linea[16])
+                    .umbral(linea[17])
+                    .categoria(linea[18])
                     .build();
     }
 }

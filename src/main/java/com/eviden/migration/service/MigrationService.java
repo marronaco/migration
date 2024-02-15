@@ -36,7 +36,8 @@ public class MigrationService {
                                             drupalProducto.getImagesPath(),
                                             drupalProducto.getSku()));
                         })
-                                .subscribe();
+        .subscribe();
+
     }
 
     private List<DrupalProductoCsv> obtenerProdutosDrupal() {

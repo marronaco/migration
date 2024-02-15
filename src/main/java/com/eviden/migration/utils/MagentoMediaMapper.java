@@ -34,7 +34,7 @@ public class MagentoMediaMapper {
                 .entry(MagentoMedia.Entry.builder()
                         .mediaType("image")
                         .label("Holanda image")
-                        .disabled(true)
+                        .disabled(false)
                         .types(List.of(
                                 "image",
                                 "small_image",
