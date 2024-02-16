@@ -21,7 +21,7 @@ public class DrupalServiceCsv {
         try {
             log.info("Drupal: Lectura del CSV Productos...");
             //Lectura del fichero csv
-            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/dungeon.csv"));
+            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/csv9Productos.csv"));
             String[] linea;
             //salto la primera linea
             csvReader.readNext();
@@ -33,7 +33,7 @@ public class DrupalServiceCsv {
         } catch (IOException | CsvValidationException e) {
             e.printStackTrace();
         }
-
+        log.info("Total de productos a insertar {}", productos.size());
         return productos;
     }
 

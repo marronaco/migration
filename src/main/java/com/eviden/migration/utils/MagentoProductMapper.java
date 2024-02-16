@@ -6,12 +6,102 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.eviden.migration.model.request.MagentoProducto.*;
 
 @Slf4j
 public class MagentoProductMapper {
+    private static final Map<String, String> MAP_CATEGORIA_TO_ID = new HashMap<>();
+    private static final Map<String, String> MAP_DIFICULTAD_TO_ID = new HashMap<>();
+    private static final Map<String, String> MAP_EDAD_TO_ID = new HashMap<>();
+    private static final Map<String, String> MAP_JUGADORES_TO_ID = new HashMap<>();
+
+    static {
+        //Establecer las categorias segun clave (nombre en Drupal) - valor (ID en magento)
+        //TODO: REVISAR LAS MAYUSCULAS
+        MAP_CATEGORIA_TO_ID.put("Juegos de Mesa", "3");
+        MAP_CATEGORIA_TO_ID.put("Oferta", "4");
+        MAP_CATEGORIA_TO_ID.put("Libros de rol", "5");
+        MAP_CATEGORIA_TO_ID.put("Accesorios", "10");
+        MAP_CATEGORIA_TO_ID.put("Fundas", "11");
+        MAP_CATEGORIA_TO_ID.put("Insertos", "12");
+        MAP_CATEGORIA_TO_ID.put("Packs de juegos", "13");
+
+        //Establecer las dificultad segun clave (nombre en Drupal) - valor (ID en magento)
+        MAP_DIFICULTAD_TO_ID.put("1", "4");
+        MAP_DIFICULTAD_TO_ID.put("2", "5");
+        MAP_DIFICULTAD_TO_ID.put("3", "6");
+        MAP_DIFICULTAD_TO_ID.put("4", "7");
+        MAP_DIFICULTAD_TO_ID.put("5", "8");
+        MAP_DIFICULTAD_TO_ID.put("6", "9");
+        MAP_DIFICULTAD_TO_ID.put("7", "10");
+        MAP_DIFICULTAD_TO_ID.put("8", "11");
+        MAP_DIFICULTAD_TO_ID.put("9", "12");
+        MAP_DIFICULTAD_TO_ID.put("10", "13");
+
+        //Establecer las edad segun clave (edad en Drupal) - valor (ID en magento)
+        MAP_EDAD_TO_ID.put("+18 años","63");
+        MAP_EDAD_TO_ID.put("+16 años","64");
+        MAP_EDAD_TO_ID.put("+14 años","62");
+        MAP_EDAD_TO_ID.put("+13 años","65");
+        MAP_EDAD_TO_ID.put("+12 años","61");
+        MAP_EDAD_TO_ID.put("+11 años","66");
+        MAP_EDAD_TO_ID.put("+10 años","60");
+        MAP_EDAD_TO_ID.put("+9 años","67");
+        MAP_EDAD_TO_ID.put("+8 años","59");
+        MAP_EDAD_TO_ID.put("+7 años","68");
+        MAP_EDAD_TO_ID.put("+6 años","69");
+        MAP_EDAD_TO_ID.put("+5 años","70");
+        MAP_EDAD_TO_ID.put("+4 años","71");
+        MAP_EDAD_TO_ID.put("+3 años","72");
+        MAP_EDAD_TO_ID.put("+2 años","73");
+
+        //Establecer los jugadores segun clave (jugadores en Drupal) - valor (ID en magento)
+        MAP_JUGADORES_TO_ID.put("1","14");
+        MAP_JUGADORES_TO_ID.put("1-2","15");
+        MAP_JUGADORES_TO_ID.put("1-4","16");
+        MAP_JUGADORES_TO_ID.put("1-5","17");
+        MAP_JUGADORES_TO_ID.put("1-6","18");
+        MAP_JUGADORES_TO_ID.put("1-8","19");
+        MAP_JUGADORES_TO_ID.put("2","20");
+        MAP_JUGADORES_TO_ID.put("2-10","27");
+        MAP_JUGADORES_TO_ID.put("2-12","28");
+        MAP_JUGADORES_TO_ID.put("2-13","29");
+        MAP_JUGADORES_TO_ID.put("2-3","21");
+        MAP_JUGADORES_TO_ID.put("2-4","22");
+        MAP_JUGADORES_TO_ID.put("2-5","23");
+        MAP_JUGADORES_TO_ID.put("2-6","24");
+        MAP_JUGADORES_TO_ID.put("2-7","25");
+        MAP_JUGADORES_TO_ID.put("2-8","26");
+        MAP_JUGADORES_TO_ID.put("3-4","30");
+        MAP_JUGADORES_TO_ID.put("3-5","31");
+        MAP_JUGADORES_TO_ID.put("3-6","32");
+        MAP_JUGADORES_TO_ID.put("3-7","33");
+        MAP_JUGADORES_TO_ID.put("3-8","34");
+        MAP_JUGADORES_TO_ID.put("3-9","35");
+        MAP_JUGADORES_TO_ID.put("3-10","36");
+        MAP_JUGADORES_TO_ID.put("3-12","37");
+        MAP_JUGADORES_TO_ID.put("4","8");
+        MAP_JUGADORES_TO_ID.put("4-6","39");
+        MAP_JUGADORES_TO_ID.put("4-7","40");
+        MAP_JUGADORES_TO_ID.put("4-8","41");
+        MAP_JUGADORES_TO_ID.put("4-9","42");
+        MAP_JUGADORES_TO_ID.put("4-10","43");
+        MAP_JUGADORES_TO_ID.put("4-12","44");
+        MAP_JUGADORES_TO_ID.put("4-50","45");
+        MAP_JUGADORES_TO_ID.put("5-6","46");
+        MAP_JUGADORES_TO_ID.put("5-7","47");
+        MAP_JUGADORES_TO_ID.put("5-10","48");
+        MAP_JUGADORES_TO_ID.put("5-12","49");
+        MAP_JUGADORES_TO_ID.put("6-10","50");
+        MAP_JUGADORES_TO_ID.put("6-12","51");
+        MAP_JUGADORES_TO_ID.put("6-15","52");
+        MAP_JUGADORES_TO_ID.put("6-24","53");
+        MAP_JUGADORES_TO_ID.put("8-18","54");
+            }
 
     /**
      * Metodo para mapear un producto del drupal a magento
@@ -19,7 +109,7 @@ public class MagentoProductMapper {
      * @return
      */
     public static MagentoProducto mapDrupalProductoDetalleToMagento(DrupalProductoCsv productDetail){
-        log.info("Mapper: iniciando mapeo del producto: {}", productDetail.getTitle());
+        log.info("Mapper: iniciando mapeo del producto: {}", productDetail.getSku());
         return builder()
                 .product(mapProductoToMagento(productDetail))
                 .build();
@@ -63,7 +153,7 @@ public class MagentoProductMapper {
                         //mapeo de la oferta
                         mapOfertaToMagento("oferta", productDetail.getOferta()),
                         //mapeo de los jugadores
-                        mapJugadoresToMagento("num_jugadores", productDetail.getJugadores()),
+                        mapJugadoresToMagento("jugadores", productDetail.getJugadores()),
                         //mapeo de umbral
                         mapUmbralToMagento("umbral", productDetail.getUmbral())
                 ))
@@ -87,11 +177,12 @@ public class MagentoProductMapper {
 
     private static List<CategoryLink> mapCategoriasToMagento(String categoria) {
         log.info("Mapper: Categorias");
-        //TODO: incluir el id de categorias de Magento y evaluar todas las respuestas de categoria de drupal switch
+        //Mapear la categoria drupal a la categoria segun su ID en Magento
+        String categoriaID = MAP_CATEGORIA_TO_ID.getOrDefault(categoria,"2");
         return List.of(
                 CategoryLink.builder()
                         .position(0)
-                        .categoryId(categoria.equals("Juegos de Mesa") ? "3" : "0") //juegos de mesa se alamcena en el id 3
+                        .categoryId(categoriaID)
                         .build()
         );
     }
@@ -119,9 +210,11 @@ public class MagentoProductMapper {
      */
     private static Custom_attributes mapJugadoresToMagento(String attributeCode, String jugadores) {
         log.info("Mapper: jugadores");
+        //Mapear la categoria drupal a la categoria segun su ID en Magento
+        String jugadoresID = MAP_JUGADORES_TO_ID.getOrDefault(jugadores,"75");
         return   Custom_attributes.builder()
                 .attributeCode(attributeCode)
-                .value(jugadores)
+                .value(jugadoresID)
                 .build();
     }
 
@@ -149,9 +242,11 @@ public class MagentoProductMapper {
      */
     private static Custom_attributes mapDificultadToMagento(String attributeCode, String dificultad) {
         log.info("Mapper: dificultad");
+        //Mapear la categoria drupal a la categoria segun su ID en Magento
+        String difultadID = MAP_DIFICULTAD_TO_ID.getOrDefault(dificultad,"74");
         return   Custom_attributes.builder()
                 .attributeCode(attributeCode)
-                .value(dificultad)
+                .value(difultadID)
                 .build();
     }
 
@@ -191,9 +286,11 @@ public class MagentoProductMapper {
      */
     private static Custom_attributes mapEdadToMagento(String attributeCode, String edad) {
         log.info("Mapper: edad");
+        //Mapear la categoria drupal a la categoria segun su ID en Magento
+        String edadID = MAP_EDAD_TO_ID.getOrDefault(edad,"73");
         return   Custom_attributes.builder()
                 .attributeCode(attributeCode)
-                .value(edad)
+                .value(edadID)
                 .build();
     }
 

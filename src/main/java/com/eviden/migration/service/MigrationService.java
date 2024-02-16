@@ -54,8 +54,6 @@ public class MigrationService {
                 .doOnSuccess(magentoProducto -> {
                     log.info("Magento: producto Response {}", magentoProducto.toString());
                 });
-
-
     }
 
     private Flux<MagentoMediaResponse> insertarImagenesEnProducto(List<String> imagesPath, String productoSku){
@@ -68,6 +66,9 @@ public class MigrationService {
     private Mono<MagentoMediaResponse> insertarImagenEnProducto(String imagePath, String productoSku){
         //insertar imagen en el producto creado
         return  magentoService
-                .insertarImagenEnProducto(imagePath, productoSku);
+                .insertarImagenEnProducto(imagePath, productoSku)
+                .doOnSuccess(imagenResponse -> {
+                    log.info("Magento: Imagen Response {}", imagenResponse.getImageId());
+                });
     }
 }

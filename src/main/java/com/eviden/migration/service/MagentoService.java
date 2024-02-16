@@ -58,12 +58,11 @@ public class MagentoService {
      * @param drupalProducto
      */
     public Mono<MagentoProductResponse> insertarProducto(DrupalProductoCsv drupalProducto) {
-        log.info("Magento: AuthToken {}", authToken);
         //comprobar si el token es nulo
         if(authToken == null){
             throw new AuthenticationFailedException("Token es nulo", HttpStatus.BAD_REQUEST);
         }
-        log.info("Magento: insertando producto '{}'", drupalProducto.getTitle());
+        log.info("Magento: insertando producto {}", drupalProducto.getSku());
         //mapear el producto de tipo drupal a magento
         MagentoProducto magentoProducto = mapDrupalProductoDetalleToMagento(drupalProducto);
         //enviar peticion HTTP a la API Magento
@@ -78,8 +77,8 @@ public class MagentoService {
                     HttpStatus status = ex.getStatusCode();
                     String response = ex.getResponseBodyAsString();
                     return Mono.error(
-                            new ResourceNotFoundException("Error: '%s' | Mensaje: '%s'"
-                                    .formatted(status,response)));
+                            new ResourceNotFoundException("Error: '%s' en producto '%s'  | Mensaje: '%s'"
+                                    .formatted(status,drupalProducto.getSku(), response)));
                 })
                 .doOnError(error -> {
                     log.error("Error: '%s'".formatted(error));
@@ -101,8 +100,8 @@ public class MagentoService {
                     HttpStatus status = ex.getStatusCode();
                     String response = ex.getResponseBodyAsString();
                     return Mono.error(
-                            new ResourceNotFoundException("Error: '%s' | Mensaje: '%s'"
-                                    .formatted(status,response)));
+                            new ResourceNotFoundException("Error: '%s' en producto '%s' | Mensaje: '%s'"
+                                    .formatted(status,productoSku, response)));
                 })
                 .doOnError(error -> {
                     log.error("Error: '%s'".formatted(error));
