@@ -14,14 +14,14 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class DrupalServiceCsv {
+public class DrupalProductoServiceCsv {
     public List<DrupalProductoCsv> importarProductosDrupalDesdeCsv() {
         List<DrupalProductoCsv> productos = new ArrayList<>();
 
         try {
             log.info("Drupal: Lectura del CSV Productos...");
             //Lectura del fichero csv
-            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/csv9Productos.csv"));
+            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/csv1.csv"));
             String[] linea;
             //salto la primera linea
             csvReader.readNext();

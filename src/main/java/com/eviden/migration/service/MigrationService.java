@@ -14,11 +14,11 @@ import java.util.List;
 @Slf4j
 @Service
 public class MigrationService {
-    private final DrupalServiceCsv drupalServiceCsv;
+    private final DrupalProductoServiceCsv drupalProductoServiceCsv;
     private  final MagentoService magentoService;
 
-    public MigrationService(DrupalServiceCsv drupalServiceCsv, MagentoService magentoService) {
-        this.drupalServiceCsv = drupalServiceCsv;
+    public MigrationService(DrupalProductoServiceCsv drupalProductoServiceCsv, MagentoService magentoService) {
+        this.drupalProductoServiceCsv = drupalProductoServiceCsv;
         this.magentoService = magentoService;
     }
 
@@ -41,7 +41,7 @@ public class MigrationService {
     }
 
     private List<DrupalProductoCsv> obtenerProdutosDrupal() {
-        return drupalServiceCsv.importarProductosDrupalDesdeCsv();
+        return drupalProductoServiceCsv.importarProductosDrupalDesdeCsv();
     }
 
     private Mono<MagentoAuthToken> autenticarUsuarioMagento(){
@@ -59,6 +59,7 @@ public class MigrationService {
     private Flux<MagentoMediaResponse> insertarImagenesEnProducto(List<String> imagesPath, String productoSku){
         log.info("Cantidad de imagenes asociadas al producto: {}", imagesPath.size());
         //listado de rutas de images del producto
+
         return Flux.fromIterable(imagesPath)
                 .flatMapSequential(imagePath -> insertarImagenEnProducto(imagePath, productoSku));
     }
