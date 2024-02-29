@@ -5,7 +5,6 @@ No se que vamos a hacer xd.
 Ya pondremos por aquí lo que vayamos haciendo (puede).
 
 ## COSAS HECHAS (y por hacer):
-
   - Obtención de token Drupal7 ✅
 
 #### Productos:
