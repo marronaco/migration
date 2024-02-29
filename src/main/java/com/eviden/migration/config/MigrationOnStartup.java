@@ -17,5 +17,6 @@ public class MigrationOnStartup implements ApplicationListener<ApplicationStarte
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
         migrationService.migracionProducto();
+        //migrationService.migracionUsuario();
     }
 }

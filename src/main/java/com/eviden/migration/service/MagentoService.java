@@ -3,10 +3,12 @@ package com.eviden.migration.service;
 import com.eviden.migration.exceptions.AuthenticationFailedException;
 import com.eviden.migration.exceptions.ResourceNotFoundException;
 import com.eviden.migration.model.DrupalProductoCsv;
+import com.eviden.migration.model.DrupalUsuarioCsv;
 import com.eviden.migration.model.request.MagentoAuthRequest;
-import com.eviden.migration.model.response.MagentoAuthToken;
 import com.eviden.migration.model.request.MagentoMedia;
 import com.eviden.migration.model.request.MagentoProducto;
+import com.eviden.migration.model.request.MagentoUsuario;
+import com.eviden.migration.model.response.MagentoAuthToken;
 import com.eviden.migration.model.response.MagentoMediaResponse;
 import com.eviden.migration.model.response.MagentoProductResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +18,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import static com.eviden.migration.utils.MagentoMediaMapper.*;
+import static com.eviden.migration.utils.MagentoMediaMapper.mapDrupalMedia;
 import static com.eviden.migration.utils.MagentoProductMapper.mapDrupalProductoDetalleToMagento;
+import static com.eviden.migration.utils.MagentoUsuarioMapper.mapDrupalUsuarioToMagento;
+
 @Slf4j
 @Service
 public class MagentoService {
@@ -100,12 +104,39 @@ public class MagentoService {
                     HttpStatus status = ex.getStatusCode();
                     String response = ex.getResponseBodyAsString();
                     return Mono.error(
-                            new ResourceNotFoundException("Error: '%s' en producto '%s' | Mensaje: '%s'"
+                            new ResourceNotFoundException("Error: '%s' en imagen '%s' | Mensaje: '%s'"
                                     .formatted(status,productoSku, response)));
                 })
                 .doOnError(error -> {
                     log.error("Error: '%s'".formatted(error));
                 });
+    }
 
+    public Mono<MagentoUsuario> insertarUsuario(DrupalUsuarioCsv usuarioCsv){
+        //comprobar si el token es nulo
+        if(authToken == null){
+            throw new AuthenticationFailedException("Token es nulo", HttpStatus.BAD_REQUEST);
+        }
+        log.info("Magento: insertando usuario {}", usuarioCsv.getNombre());
+        //mapear usarioCsv a UsuarioMagento
+        MagentoUsuario usuario = mapDrupalUsuarioToMagento(usuarioCsv);
+        //enviar peticion HTTP a la API Magento
+        return magentoWebClient.post()
+                .uri("/customers")//TODO: actualizar endpoint
+                .header("Authorization", "Bearer %s".formatted(authToken))
+                .body(Mono.just(usuario), MagentoUsuario.class)
+                .retrieve()
+                .bodyToMono(MagentoUsuario.class)//TODO: verificar la respuesta al incluir un usuario
+                .onErrorResume(WebClientResponseException.class, ex -> {
+                    //manejo detallado de la excepcion
+                    HttpStatus status = ex.getStatusCode();
+                    String response = ex.getResponseBodyAsString();
+                    return Mono.error(
+                            new ResourceNotFoundException("Error: '%s' en usuario '%s'  | Mensaje: '%s'"
+                                    .formatted(status, usuario.getCustomer().getFirstname(), response)));
+                })
+                .doOnError(error -> {
+                    log.error("Error: '%s'".formatted(error));
+                });
     }
 }

@@ -13,38 +13,12 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MagentoUsuario {
     //atributos de para insertar usuario
-    @JsonProperty("group_id")
-    private int groupId;
-
-    @JsonProperty("email")
-    private String email;
-
-    @JsonProperty("firstname")
-    private String firstname;
-
-    @JsonProperty("lastname")
-    private String lastname;
-
-    @JsonProperty("gender")
-    private int gender; //revisar cuales son los codigos para el tipo de gender en magento
-
-    @JsonProperty("storeId")
-    private int storeId;
-
-    @JsonProperty("websiteId")
-    private int websiteId;
-
-    @JsonProperty("addresses")
-    private List<Addresses> addresses;
-
-    @JsonProperty("disableAutoGroupChange")
-    private int disableAutoGroupChange;
-
-    @JsonProperty("extensionAttributes")
-    private ExtensionAttributes extensionAttributes;
+    @JsonProperty("customer")
+    private Customer customer;
 
     @JsonProperty("password")
     private String password;
+
 
     //Inner clases de los atributos de tipo objeto
     @Data
@@ -52,7 +26,7 @@ public class MagentoUsuario {
     @NoArgsConstructor(access = AccessLevel.PUBLIC)
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class ExtensionAttributes {
+    public static class ExtensionAttributes {
 
         @JsonProperty("isSubscribed")
         private boolean isSubscribed;
@@ -63,7 +37,7 @@ public class MagentoUsuario {
     @NoArgsConstructor(access = AccessLevel.PUBLIC)
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class Addresses {
+    public static class Addresses {
 
         @JsonProperty("id")
         private int id;
@@ -110,7 +84,7 @@ public class MagentoUsuario {
     @NoArgsConstructor(access = AccessLevel.PUBLIC)
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class Region {
+    public static class Region {
 
         @JsonProperty("region_code")
         private String regionCode;
@@ -119,6 +93,44 @@ public class MagentoUsuario {
         private String region;
 
         @JsonProperty("region_id")
-        private String regionId;
+        private int regionId;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Customer {
+
+        @JsonProperty("group_id")
+        private int groupId;
+
+        @JsonProperty("email")
+        private String email;
+
+        @JsonProperty("firstname")
+        private String firstname;
+
+        @JsonProperty("lastname")
+        private String lastname;
+
+        @JsonProperty("gender")
+        private int gender; //revisar cuales son los codigos para el tipo de gender en magento
+
+        @JsonProperty("storeId")
+        private int storeId;
+
+        @JsonProperty("websiteId")
+        private int websiteId;
+
+        @JsonProperty("addresses")
+        private List<Addresses> addresses;
+
+        @JsonProperty("disableAutoGroupChange")
+        private int disableAutoGroupChange;
+
+        @JsonProperty("extensionAttributes")
+        private ExtensionAttributes extensionAttributes;
     }
 }

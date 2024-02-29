@@ -21,7 +21,7 @@ public class DrupalProductoServiceCsv {
         try {
             log.info("Drupal: Lectura del CSV Productos...");
             //Lectura del fichero csv
-            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/csv1.csv"));
+            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/csv9Productos.csv"));
             String[] linea;
             //salto la primera linea
             csvReader.readNext();

@@ -12,8 +12,7 @@ import java.util.List;
 public class DrupalUsuarioCsv {
     //atributos del CSV
     private String uid;
-    private List<String> rol;
-    private String nickname;
+    private String rol;
     private String email;
     private String nombre;
     private String apellidos;
@@ -21,5 +20,7 @@ public class DrupalUsuarioCsv {
     private String direccion2;
     private String codigoPostal;
     private String ciudad;
+    private String provincia;
+    private String codigoProvincia;
     private String telefono;
 }

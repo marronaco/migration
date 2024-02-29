@@ -39,19 +39,19 @@ public class DrupalUsuarioServiceCsv {
 
     private DrupalUsuarioCsv mapToUsuarioDrupalCsv(String[] linea) {
         // Separar como con imagenes los roles por coma
-        String[] rolesArray = linea[1].split(",");
         return DrupalUsuarioCsv.builder()
                 .uid(linea[0])
-                .rol(Arrays.asList(rolesArray))
-                .nickname(linea[2])
-                .email(linea[3])
-                .nombre(linea[4])
-                .apellidos(linea[5])
-                .direccion1(linea[6])
-                .direccion2(linea[7])
-                .codigoPostal(linea[8])
-                .ciudad(linea[9])
-                .telefono(linea[10])
+                .rol(linea[1])
+                .email(linea[2])
+                .nombre(linea[3])
+                .apellidos(linea[4])
+                .direccion1(linea[5])
+                .direccion2(linea[6])
+                .codigoPostal(linea[7])
+                .ciudad(linea[8])
+                .provincia(linea[9])
+                .codigoProvincia(linea[10])
+                .telefono(linea[11])
                 .build();
     }
 }
