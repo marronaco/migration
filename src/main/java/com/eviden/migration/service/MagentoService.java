@@ -103,9 +103,10 @@ public class MagentoService {
                     //manejo detallado de la excepcion
                     HttpStatus status = ex.getStatusCode();
                     String response = ex.getResponseBodyAsString();
+                    String response2 = ex.getLocalizedMessage();
                     return Mono.error(
-                            new ResourceNotFoundException("Error: '%s' en imagen '%s' | Mensaje: '%s'"
-                                    .formatted(status,productoSku, response)));
+                            new ResourceNotFoundException("Error: '%s' en imagen '%s' | Mensaje1: '%s' | Mensaje2: '%s'"
+                                    .formatted(status,productoSku, response, response2)));
                 })
                 .doOnError(error -> {
                     log.error("Error: '%s'".formatted(error));

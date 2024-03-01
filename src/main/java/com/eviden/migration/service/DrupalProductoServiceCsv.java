@@ -15,13 +15,14 @@ import java.util.List;
 @Slf4j
 @Service
 public class DrupalProductoServiceCsv {
+    private static int contadorImagenesPath = 0;
     public List<DrupalProductoCsv> importarProductosDrupalDesdeCsv() {
         List<DrupalProductoCsv> productos = new ArrayList<>();
 
         try {
             log.info("Drupal: Lectura del CSV Productos...");
             //Lectura del fichero csv
-            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/csv9Productos.csv"));
+            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/csvUnDiaEnLasCarreras.csv"));
             String[] linea;
             //salto la primera linea
             csvReader.readNext();
@@ -34,6 +35,7 @@ public class DrupalProductoServiceCsv {
             e.printStackTrace();
         }
         log.info("Total de productos a insertar {}", productos.size());
+        log.info("Total imagenes path a insertar {}", contadorImagenesPath);
         return productos;
     }
 
@@ -41,6 +43,8 @@ public class DrupalProductoServiceCsv {
         log.info("Drupal: obtenido producto {}", linea[0]);
         //separar la ruta de images a una array
         String[] imagenesArray = linea[5].split("\\s*,\\s*");
+        //contador del listado de imagenes path
+        contadorImagenesPath += imagenesArray.length;
         //devuelve la creacion del nuevo objeto
         return DrupalProductoCsv.builder()
                     .sku(linea[0])

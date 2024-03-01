@@ -33,12 +33,32 @@ public class MigrationService {
     public void migracionProducto(){
         //drupal: obtener producto
         List<DrupalProductoCsv> drupalProductos = obtenerProdutosDrupal();
+
         //magento: autenticar usuario
         autenticarUsuarioMagento().block();
         //drupal: iterar sobre los productos
+//        Flux.fromIterable(drupalProductos)
+//                        .flatMapSequential(drupalProducto -> {
+//                            return Mono.delay(Duration.ofSeconds(60))
+//                                    .then(insertarProducto(drupalProducto))
+//                                    .delayElement(Duration.ofSeconds(60))
+//                                    .thenMany(insertarImagenesEnProducto(
+//                                            drupalProducto.getImagesPath(),
+//                                            drupalProducto.getSku()));
+//                        })
+//        .subscribe();
+        // SOLO PRODUCTOS INSERTAR
+//        Flux.fromIterable(drupalProductos)
+//                .flatMapSequential(drupalProducto -> {
+//                    return Mono.delay(Duration.ofSeconds(40))
+//                            .then(insertarProducto(drupalProducto))
+//                            .delayElement(Duration.ofSeconds(40));
+//                })
+//                .subscribe();
+        // SOLO IMAGENES INSERTAR
         Flux.fromIterable(drupalProductos)
                         .flatMapSequential(drupalProducto -> {
-                            return insertarProducto(drupalProducto)
+                            return Mono.delay(Duration.ofSeconds(100))
                                     .thenMany(insertarImagenesEnProducto(
                                             drupalProducto.getImagesPath(),
                                             drupalProducto.getSku()));
@@ -67,8 +87,19 @@ public class MigrationService {
         log.info("Cantidad de imagenes asociadas al producto: {}", imagesPath.size());
         //listado de rutas de images del producto
 
+//        return Flux.fromIterable(imagesPath)
+//                .flatMapSequential(imagePath -> insertarImagenEnProductoConDelay(imagePath, productoSku));
         return Flux.fromIterable(imagesPath)
-                .flatMapSequential(imagePath -> insertarImagenEnProducto(imagePath, productoSku));
+                        .flatMapSequential(imagePath -> {
+                            return Mono.delay(Duration.ofSeconds(100))
+                                    .then(insertarImagenEnProductoConDelay(imagePath, productoSku));
+                        });
+    }
+
+    private Mono<MagentoMediaResponse> insertarImagenEnProductoConDelay(String imagePath, String productoSku){
+        // Insertar imagen en el producto creado con un retraso de 2 segundos entre inserciones
+        return insertarImagenEnProducto(imagePath, productoSku)
+                .delayElement(Duration.ofSeconds(100));
     }
 
     private Mono<MagentoMediaResponse> insertarImagenEnProducto(String imagePath, String productoSku){
@@ -77,8 +108,7 @@ public class MigrationService {
                 .insertarImagenEnProducto(imagePath, productoSku)
                 .doOnSuccess(imagenResponse -> {
                     log.info("Magento: Imagen Response {}", imagenResponse.getImageId());
-                })
-                .delayElement(Duration.ofSeconds(40));
+                });
     }
 
     public void migracionUsuario() {
@@ -104,7 +134,7 @@ public class MigrationService {
         //insertar producto en magento
         return magentoService.insertarUsuario(usuarioCsv)
                 .doOnSuccess(magentoProducto -> {
-                    log.info("Magento: Usuario Response {}", magentoProducto.toString());
+                    log.info("Magento: Usuario Response {}", magentoProducto.getCustomer().getFirstname());
                 });
     }
 }
