@@ -48,22 +48,26 @@ public class MigrationService {
 //                        })
 //        .subscribe();
         // SOLO PRODUCTOS INSERTAR
-//        Flux.fromIterable(drupalProductos)
-//                .flatMapSequential(drupalProducto -> {
-//                    return Mono.delay(Duration.ofSeconds(40))
-//                            .then(insertarProducto(drupalProducto))
-//                            .delayElement(Duration.ofSeconds(40));
-//                })
-//                .subscribe();
-        // SOLO IMAGENES INSERTAR
         Flux.fromIterable(drupalProductos)
-                        .flatMapSequential(drupalProducto -> {
-                            return Mono.delay(Duration.ofSeconds(100))
-                                    .thenMany(insertarImagenesEnProducto(
-                                            drupalProducto.getImagesPath(),
-                                            drupalProducto.getSku()));
-                        })
-        .subscribe();
+                .flatMapSequential(drupalProducto -> {
+                    return Mono.delay(Duration.ofSeconds(100))
+                            .then(insertarProducto(drupalProducto))
+                            .delayElement(Duration.ofSeconds(100));
+                })
+                .subscribe(null,
+                        error -> {}
+                        ,() -> {
+                    log.info("Migracion finalizada");
+                });
+//        // SOLO IMAGENES INSERTAR
+//        Flux.fromIterable(drupalProductos)
+//                        .flatMapSequential(drupalProducto -> {
+//                            return Mono.delay(Duration.ofSeconds(100))
+//                                    .thenMany(insertarImagenesEnProducto(
+//                                            drupalProducto.getImagesPath(),
+//                                            drupalProducto.getSku()));
+//                        })
+//        .subscribe();
 
     }
 

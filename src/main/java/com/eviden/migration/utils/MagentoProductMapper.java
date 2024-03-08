@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.eviden.migration.model.request.MagentoProducto.*;
 
@@ -21,14 +22,15 @@ public class MagentoProductMapper {
 
     static {
         //Establecer las categorias segun clave (nombre en Drupal) - valor (ID en magento)
-        //TODO: REVISAR LAS MAYUSCULAS
         MAP_CATEGORIA_TO_ID.put("Juegos de Mesa", "3");
         MAP_CATEGORIA_TO_ID.put("Oferta", "4");
-        MAP_CATEGORIA_TO_ID.put("Libros de rol", "5");
+        MAP_CATEGORIA_TO_ID.put("libros", "5");
         MAP_CATEGORIA_TO_ID.put("Accesorios", "10");
         MAP_CATEGORIA_TO_ID.put("Fundas", "11");
-        MAP_CATEGORIA_TO_ID.put("Insertos", "12");
-        MAP_CATEGORIA_TO_ID.put("Packs de juegos", "13");
+        MAP_CATEGORIA_TO_ID.put("Inserto", "12");
+        MAP_CATEGORIA_TO_ID.put("PREventa", "14");
+        MAP_CATEGORIA_TO_ID.put("Xtreme Art", "16");
+        MAP_CATEGORIA_TO_ID.put("Actuales", "17");
 
         //Establecer las dificultad segun clave (nombre en Drupal) - valor (ID en magento)
         MAP_DIFICULTAD_TO_ID.put("1", "4");
@@ -101,7 +103,7 @@ public class MagentoProductMapper {
         MAP_JUGADORES_TO_ID.put("6-15","52");
         MAP_JUGADORES_TO_ID.put("6-24","53");
         MAP_JUGADORES_TO_ID.put("8-18","54");
-            }
+    }
 
     /**
      * Metodo para mapear un producto del drupal a magento
@@ -130,7 +132,9 @@ public class MagentoProductMapper {
                 .status(mapPublicadoToMagento(productDetail.getPublicado()))
                 .type_id("simple")
                 .attribute_set_id(4)
-                .extensionAttributes(mapExtensionAttributeToMagento(productDetail.getNivel(), productDetail.getCategoria()))
+                .extensionAttributes(mapExtensionAttributeToMagento(productDetail.getNivel(),
+                                                                    productDetail.getCategorias(),
+                                                                    productDetail.getTipo()))
                 .customAttributes(List.of(
                         //mapeo de la descripcion
                         mapDescripcionToMagento("description", productDetail.getDescripcion()),
@@ -168,23 +172,34 @@ public class MagentoProductMapper {
                 .build();
     }
 
-    private static ExtensionAttribute mapExtensionAttributeToMagento(String nivel, String categoria) {
+    private static ExtensionAttribute mapExtensionAttributeToMagento(String nivel,
+                                                                     List<String> categorias,
+                                                                     String tipo) {
+        //Mapear catalag de drupal a magento producto
+        List<CategoryLink> categoryLinks = mapCategoriasToMagento(categorias);
+        //Mapear tipo de drupal a magento producto
+        categoryLinks.add(mapCategoriaToMagento(tipo));
         return ExtensionAttribute.builder()
                 .stock_item( mapNivelToMagento(nivel))
-                .categoryLinks(mapCategoriasToMagento(categoria))
+                .categoryLinks(categoryLinks)
                 .build();
     }
 
-    private static List<CategoryLink> mapCategoriasToMagento(String categoria) {
+    private static List<CategoryLink> mapCategoriasToMagento(List<String> categorias) {
         log.info("Mapper: Categorias");
+        return categorias.stream()
+                .map(categoria -> mapCategoriaToMagento(categoria))
+                .collect(Collectors.toList());
+    }
+
+    private static CategoryLink mapCategoriaToMagento(String categoria){
         //Mapear la categoria drupal a la categoria segun su ID en Magento
-        String categoriaID = MAP_CATEGORIA_TO_ID.getOrDefault(categoria,"2");
-        return List.of(
-                CategoryLink.builder()
-                        .position(0)
-                        .categoryId(categoriaID)
-                        .build()
-        );
+        //en caso de no coincidir con la categoria del MAP_CATEGORIA_TO_ID se colocara a la categoria 'No especificada' ID 18
+        String categoriaID = MAP_CATEGORIA_TO_ID.getOrDefault(categoria,"18");
+        return CategoryLink.builder()
+                .position(0)
+                .categoryId(categoriaID)
+                .build();
     }
 
     private static Custom_attributes mapOfertaToMagento(String attributeCode, String oferta) {

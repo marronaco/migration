@@ -30,7 +30,7 @@ public class DrupalProductoCsv {
     private String nivel;
     private String publicado;
     private String jugadores;
-    private String categoria;
     private String umbral;
-
+    private List<String> categorias;
+    private String tipo;
 }

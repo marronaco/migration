@@ -1,8 +1,4 @@
-# MARRONACO ANTOLOGICO (pero en Spring)
+# MIGRACIÓN DRUPAL 7 A MAGENTO 2
 
-No se que vamos a hacer xd.
+Proyecto de migración de productos y clientes de la pagina ``Tablerum.com`` 
 
-Ya pondremos por aquí lo que vayamos haciendo (puede).
-
-
-Este es el pequeño cambio

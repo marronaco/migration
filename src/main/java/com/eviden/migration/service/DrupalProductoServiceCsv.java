@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -22,7 +21,7 @@ public class DrupalProductoServiceCsv {
         try {
             log.info("Drupal: Lectura del CSV Productos...");
             //Lectura del fichero csv
-            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/csvUnDiaEnLasCarreras.csv"));
+            CSVReader csvReader = new CSVReader(new FileReader("src/main/resources/exportar-productos-100.csv"));
             String[] linea;
             //salto la primera linea
             csvReader.readNext();
@@ -41,10 +40,12 @@ public class DrupalProductoServiceCsv {
 
     private  DrupalProductoCsv mapToProductoDrupalCsv(String[] linea) {
         log.info("Drupal: obtenido producto {}", linea[0]);
-        //separar la ruta de images a una array
+        //separar la ruta de images a un array
         String[] imagenesArray = linea[5].split("\\s*,\\s*");
         //contador del listado de imagenes path
         contadorImagenesPath += imagenesArray.length;
+        //separara la cadena de categoria a un array
+        String[] categorias = linea[18].split("\\s*,\\s*");
         //devuelve la creacion del nuevo objeto
         return DrupalProductoCsv.builder()
                     .sku(linea[0])
@@ -52,7 +53,7 @@ public class DrupalProductoServiceCsv {
                     .path(linea[2])
                     .descripcion(linea[3])
                     .estanteria(linea[4])
-                    .imagesPath(Arrays.asList(imagenesArray))
+                    .imagesPath(List.of(imagenesArray))
                     .cost(linea[6])
                     .precioVentaSinIva(linea[7])
                     .oldPrice(linea[8])
@@ -65,7 +66,8 @@ public class DrupalProductoServiceCsv {
                     .publicado(linea[15])
                     .jugadores(linea[16])
                     .umbral(linea[17])
-                    .categoria(linea[18])
+                    .categorias(List.of(categorias))
+                    .tipo(linea[19])
                     .build();
     }
 }
