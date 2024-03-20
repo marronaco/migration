@@ -1,7 +1,7 @@
 package com.eviden.migration.utils;
 
-import com.eviden.migration.model.DrupalProductoCsv;
-import com.eviden.migration.model.request.MagentoProducto;
+import com.eviden.migration.models.drupal.DrupalProducto;
+import com.eviden.migration.models.magento.MagentoProducto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.eviden.migration.model.request.MagentoProducto.*;
+import static com.eviden.migration.models.magento.MagentoProducto.*;
 
 @Slf4j
 public class MagentoProductMapper {
@@ -110,7 +110,7 @@ public class MagentoProductMapper {
      * @param productDetail
      * @return
      */
-    public static MagentoProducto mapDrupalProductoDetalleToMagento(DrupalProductoCsv productDetail){
+    public static MagentoProducto mapDrupalProductoDetalleToMagento(DrupalProducto productDetail){
         log.info("Mapper: iniciando mapeo del producto: {}", productDetail.getSku());
         return builder()
                 .product(mapProductoToMagento(productDetail))
@@ -122,8 +122,7 @@ public class MagentoProductMapper {
      * @param productDetail
      * @return producto
      */
-    private static Product mapProductoToMagento(DrupalProductoCsv productDetail) {
-        log.info("Mapper: creando el objeto producto magento...");
+    private static Product mapProductoToMagento(DrupalProducto productDetail) {
         //mapeo del producto
         return Product.builder()
                 .sku(productDetail.getSku())
@@ -164,6 +163,12 @@ public class MagentoProductMapper {
                 .build();
     }
 
+    /**
+     * netodo para mapear el umbral del producto
+     * @param attributeCode
+     * @param umbral
+     * @return
+     */
     private static Custom_attributes mapUmbralToMagento(String attributeCode, String umbral) {
         log.info("Mapper: Umbral");
         return   Custom_attributes.builder()
@@ -172,6 +177,13 @@ public class MagentoProductMapper {
                 .build();
     }
 
+    /**
+     * Metodo para mapear el stock del producto y las categorias
+     * @param nivel
+     * @param categorias
+     * @param tipo
+     * @return
+     */
     private static ExtensionAttribute mapExtensionAttributeToMagento(String nivel,
                                                                      List<String> categorias,
                                                                      String tipo) {
@@ -185,6 +197,11 @@ public class MagentoProductMapper {
                 .build();
     }
 
+    /**
+     * Metodo para mapear la lista de categorias del producto
+     * @param categorias
+     * @return
+     */
     private static List<CategoryLink> mapCategoriasToMagento(List<String> categorias) {
         log.info("Mapper: Categorias");
         return categorias.stream()
@@ -192,6 +209,11 @@ public class MagentoProductMapper {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Metodo para mapear la categoria del producto
+     * @param categoria
+     * @return
+     */
     private static CategoryLink mapCategoriaToMagento(String categoria){
         //Mapear la categoria drupal a la categoria segun su ID en Magento
         //en caso de no coincidir con la categoria del MAP_CATEGORIA_TO_ID se colocara a la categoria 'No especificada' ID 18
@@ -202,6 +224,12 @@ public class MagentoProductMapper {
                 .build();
     }
 
+    /**
+     * Metodo para mapear la oferta del producto
+     * @param attributeCode
+     * @param oferta
+     * @return
+     */
     private static Custom_attributes mapOfertaToMagento(String attributeCode, String oferta) {
         log.info("Mapper: Oferta");
         //En magento oferta: 1 = SI | 0 = NO
@@ -211,6 +239,11 @@ public class MagentoProductMapper {
                 .build();
     }
 
+    /**
+     * Metodo para mapear la visibilidad del producto
+     * @param publicado
+     * @return
+     */
     private static double mapPublicadoToMagento(String publicado) {
         log.info("Mapper: publicado");
         //En magento producto status (visibilidad): 1 = visible | 2 = NO visible

@@ -1,4 +1,4 @@
-package com.eviden.migration.model.request;
+package com.eviden.migration.models.magento;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,6 +6,11 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * Esta clase define los atributos
+ * que se enviaran al cuerpo de la solicitud para
+ * la creacion del producto
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)

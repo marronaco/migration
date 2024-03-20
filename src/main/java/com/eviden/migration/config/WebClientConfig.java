@@ -4,22 +4,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
+
+/**
+ * Configuracion de URL para acceder al
+ * servicio REST de magento
+ */
 @Configuration
 public class WebClientConfig {
-
-    @Bean
-    public WebClient drupalWebClient(){
-        return WebClient.builder()
-                .baseUrl("http://localhost/test_drupal/rest")
-                .defaultHeader("Content-Type","application/json")
-                .build();
-    }
-
     @Bean
     public WebClient magentoWebClient(){
         return WebClient.builder()
-//                .baseUrl("http://marronaco.magento2.com/rest/V1")
-                .baseUrl("http://tablerummagento.com/rest/V1")
+                .baseUrl("http://tablerum.com/rest/V1")
                 .defaultHeader("Content-Type","application/json")
                 .build();
 

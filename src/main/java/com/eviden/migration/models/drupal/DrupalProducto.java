@@ -1,18 +1,19 @@
-package com.eviden.migration.model;
+package com.eviden.migration.models.drupal;
 
-import com.eviden.migration.model.response.DrupalProductoJson;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.opencsv.bean.CsvBindByName;
 import lombok.*;
 
 import java.util.List;
 
+/**
+ * En esta clase se definen los atributos
+ * establecidos la columnas del CSV
+ */
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor
 @Builder
-public class DrupalProductoCsv {
-    //atributos del CSV
+public class DrupalProducto {
+    //atributos CSV drupal productos
     private String sku;
     private String title;
     private String path;
@@ -33,4 +34,5 @@ public class DrupalProductoCsv {
     private String umbral;
     private List<String> categorias;
     private String tipo;
+    private String peso;
 }
